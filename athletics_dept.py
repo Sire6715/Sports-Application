@@ -1,24 +1,37 @@
 from sport import Category, SportType
+from abc import ABC, abstractmethod
 from sports import VarsityBaseball, VarsityFootball, IntramuralBaseball, IntramuralVolleyball, IntramuralFootball
 
 
-class AthleticsDept:
-     def generate_report(self, which):
-          sport = None
+class AthleticsDept(ABC):
+     @abstractmethod
+     def create_sport(self, sport_type):
+          pass
+     
+     def generate_report(self, sport_type):
+          sport = self.create_sport(sport_type)
           
-          match which:
-               case [Category.VARSITY, SportType.BASEBALL]:
-                    sport = VarsityBaseball()
-               case [Category.VARSITY, SportType.FOOTBALL]:
-                    sport = VarsityFootball()
-               case [Category.INTRAMURAL, SportType.BASEBALL]:
-                    sport = IntramuralBaseball()
-               case [Category.INTRAMURAL, SportType.FOOTBALL]:
-                    sport = IntramuralFootball()
-               case [Category.INTRAMURAL, SportType.VOLLEYBALL]:
-                    sport = IntramuralVolleyball()
-                    
           print(f'{sport.CATEGORY} {sport.SPORT_TYPE}')
-          print(f'       players: {sport.recruit_players()}')
-          print(f'            venue: {sport.reserve_venue()}')
+          print(f'  players: {sport.recruit_players()}')
+          print(f'       venue: {sport.reserve_venue()}')
           print()
+          
+class VarsityDept(AthleticsDept):
+     def create_sport(self, sport_type):
+          match sport_type:
+               case SportType.BASEBALL:
+                    return VarsityBaseball()
+               case SportType.FOOTBALL:
+                    return VarsityFootball()
+               case _:
+                    return None;
+               
+class IntramuralDept(AthleticsDept):
+     def create_sport(self, sport_type):
+          match sport_type:
+               case SportType.BASEBALL:
+                    return IntramuralBaseball()
+               case SportType.FOOTBALL:
+                    return IntramuralFootball()
+               case SportType.VOLLEYBALL:
+                    return IntramuralVolleyball()
