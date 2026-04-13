@@ -1,21 +1,37 @@
-from sport import Sport
-from player_strategy import BaseballPlayers, FootballPlayers, VolleyballPlayers
+from sport import Category, SportType, Sport
+from player_strategy import VarsityFootballPlayers,VarsityBaseballPlayers, IntramuralBaseballPlayers, IntramuralFootballPlayers, IntramuralVolleyballPlayers
 from venue_strategy import Stadium, OpenField
 
-class Baseball(Sport):
-     _SPORT_TYPE = 'BASEBALL'
+class VarsityBaseball(Sport):
+     _CATEGORY = Category.VARSITY
+     _SPORT_TYPE = SportType.BASEBALL
      
      def __init__(self):
-          super().__init__(BaseballPlayers(), Stadium())
+          super().__init__(VarsityBaseballPlayers(), Stadium())
           
-class Football(Sport):
-     _SPORT_TYPE = "FOOTBALL"
+class VarsityFootball(Sport):
+     _CATEGORY = Category.VARSITY
+     _SPORT_TYPE = SportType.FOOTBALL
      
      def __init__(self):
-          super().__init__(FootballPlayers(), Stadium())
+          super().__init__(VarsityFootballPlayers(), Stadium())
           
-class Volleyball(Sport):
-     _SPORT_TYPE = 'VOLLEYBALL'
+class IntramuralVolleyball(Sport):
+     _CATEGORY = Category.INTRAMURAL
+     _SPORT_TYPE = SportType.VOLLEYBALL
      
      def __init__(self):
-          super().__init__(VolleyballPlayers(), OpenField())
+          super().__init__(IntramuralVolleyballPlayers(), OpenField())
+          
+class IntramuralFootball(Sport):
+     _CATEGORY = Category.INTRAMURAL
+     _SPORT_TYPE = SportType.FOOTBALL
+     
+     def __init__(self):
+          super().__init__(IntramuralFootballPlayers(), OpenField())
+class IntramuralBaseball(Sport):
+     _CATEGORY = Category.INTRAMURAL
+     _SPORT_TYPE = SportType.BASEBALL
+     
+     def __init__(self):
+          super().__init__(IntramuralBaseballPlayers(), OpenField())
