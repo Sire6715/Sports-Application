@@ -17,9 +17,9 @@ class Sport:
      _CATEGORY = None
      _SPORT_TYPE = None
      
-     def __init__(self, player_strategy, venue_strategy):
-          self._player_strategy = player_strategy
-          self._venue_strategy = venue_strategy
+     def __init__(self, factory):
+          self._player_strategy = factory.make_players(self._SPORT_TYPE)
+          self._venue_strategy = factory.make_venue()
           
      @property
      def CATEGORY(self): return self._CATEGORY

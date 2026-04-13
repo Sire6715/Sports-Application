@@ -1,6 +1,7 @@
 from sport import Category, SportType
 from abc import ABC, abstractmethod
 from sports import VarsityBaseball, VarsityFootball, IntramuralBaseball, IntramuralVolleyball, IntramuralFootball
+from provisions_factory import VarsityFactory, IntramuralFactory
 
 
 class AthleticsDept(ABC):
@@ -20,18 +21,21 @@ class VarsityDept(AthleticsDept):
      def create_sport(self, sport_type):
           match sport_type:
                case SportType.BASEBALL:
-                    return VarsityBaseball()
+                    return VarsityBaseball(VarsityFactory())
                case SportType.FOOTBALL:
-                    return VarsityFootball()
+                    return VarsityFootball(VarsityFactory())
                case _:
                     return None;
+               
                
 class IntramuralDept(AthleticsDept):
      def create_sport(self, sport_type):
           match sport_type:
                case SportType.BASEBALL:
-                    return IntramuralBaseball()
+                    return IntramuralBaseball(IntramuralFactory())
                case SportType.FOOTBALL:
-                    return IntramuralFootball()
+                    return IntramuralFootball(IntramuralFactory())
                case SportType.VOLLEYBALL:
-                    return IntramuralVolleyball()
+                    return IntramuralVolleyball(IntramuralFactory())
+               case _:
+                    return None;

@@ -1,6 +1,6 @@
 # Sports Application
 
-This is a **Sports Application** built in Python that demonstrates the **Strategy design pattern**. The application simulates an athletics department that manages different sports programs with varying categories and types.
+This is a **Sports Application** built in Python that demonstrates both the **Factory** and **Strategy** design patterns. The application simulates an athletics department that manages different sports programs with varying categories and sport types.
 
 ## Installation
 
@@ -47,9 +47,10 @@ INTRAMURAL VOLLEYBALL
 ```
 Sports Application/
 ├── main.py                 # Entry point of the application
-├── athletics_dept.py       # AthleticsDept class for generating reports
-├── sport.py                # Base Sport class and enums
-├── sports.py               # Concrete sport implementations
+├── athletics_dept.py       # Abstract and concrete department classes
+├── sport.py                # Base Sport class and enumerations
+├── sports.py               # Concrete sport subclasses
+├── provisions_factory.py   # Abstract factory and concrete factories
 ├── player_strategy.py      # Player recruitment strategies
 ├── venue_strategy.py       # Venue reservation strategies
 ├── README.md               # This file
@@ -59,22 +60,34 @@ Sports Application/
 ## Key Features:
 - **Sports Categories**: Varsity (competitive) and Intramural (recreational)
 - **Sport Types**: Baseball, Football, and Volleyball
-- **Dynamic Strategies**: Each sport uses different strategies for:
-  - **Player Recruitment**: Different approaches for varsity vs. intramural players
-  - **Venue Reservation**: Stadiums for varsity sports, open fields for intramural
+- **Factory Pattern**: Department classes create sport objects and provide factories for strategy creation
+- **Strategy Pattern**: Sport objects delegate player recruitment and venue reservation to strategy objects
 
 ## How It Works:
-- The `AthleticsDept` class generates reports for specific sport combinations
-- Each sport is represented by a concrete class (e.g., `VarsityBaseball`, `IntramuralVolleyball`)
-- Sports use composition with strategy objects for player and venue management
-- Running `main.py` generates sample reports showing the recruited players and reserved venues for each sport category/type combination
+- `main.py` builds two departments: `VarsityDept` and `IntramuralDept`
+- Each department chooses the right sport type and instantiates a concrete `Sport` subclass
+- Each sport is constructed with a `ProvisionsFactory` that creates:
+  - the correct `PlayerStrategy`
+  - the correct `VenueStrategy`
+- The `Sport` base class uses the factory to build strategies, then delegates behavior to them
+- `generate_report()` prints the sport category, sport type, recruited players, and reserved venue
 
 ## UML Diagram
 
 ```mermaid
 classDiagram
     class AthleticsDept {
-        +generate_report(which)
+        <<abstract>>
+        +generate_report(sport_type)
+        +create_sport(sport_type)
+    }
+    
+    class VarsityDept {
+        +create_sport(sport_type)
+    }
+    
+    class IntramuralDept {
+        +create_sport(sport_type)
     }
     
     class Sport {
@@ -84,73 +97,62 @@ classDiagram
         -_venue_strategy
         +CATEGORY
         +SPORT_TYPE
-        +player_strategy
-        +venue_strategy
         +recruit_players()
         +reserve_venue()
     }
     
-    class VarsityBaseball {
-        -_CATEGORY = VARSITY
-        -_SPORT_TYPE = BASEBALL
+    class ProvisionsFactory {
+        <<abstract>>
+        +make_players(player_type)
+        +make_venue()
     }
     
-    class VarsityFootball {
-        -_CATEGORY = VARSITY
-        -_SPORT_TYPE = FOOTBALL
+    class VarsityFactory {
+        +make_players(player_type)
+        +make_venue()
     }
     
-    class IntramuralBaseball {
-        -_CATEGORY = INTRAMURAL
-        -_SPORT_TYPE = BASEBALL
-    }
-    
-    class IntramuralFootball {
-        -_CATEGORY = INTRAMURAL
-        -_SPORT_TYPE = FOOTBALL
-    }
-    
-    class IntramuralVolleyball {
-        -_CATEGORY = INTRAMURAL
-        -_SPORT_TYPE = VOLLEYBALL
+    class IntramuralFactory {
+        +make_players(player_type)
+        +make_venue()
     }
     
     class PlayerStrategy {
         <<abstract>>
-        +strategy()* string
+        +strategy()
     }
     
     class VarsityBaseballPlayers {
-        +strategy() string
+        +strategy()
     }
     
     class VarsityFootballPlayers {
-        +strategy() string
+        +strategy()
     }
     
     class IntramuralBaseballPlayers {
-        +strategy() string
+        +strategy()
     }
     
     class IntramuralFootballPlayers {
-        +strategy() string
+        +strategy()
     }
     
     class IntramuralVolleyballPlayers {
-        +strategy() string
+        +strategy()
     }
     
     class VenueStrategy {
         <<abstract>>
-        +strategy()* string
+        +strategy()
     }
     
     class Stadium {
-        +strategy() string
+        +strategy()
     }
     
     class OpenField {
-        +strategy() string
+        +strategy()
     }
     
     class Category {
@@ -166,31 +168,30 @@ classDiagram
         VOLLEYBALL
     }
     
-    AthleticsDept --> Sport : creates
-    Sport --> PlayerStrategy : uses
-    Sport --> VenueStrategy : uses
-    VarsityBaseball --|> Sport
-    VarsityFootball --|> Sport
-    IntramuralBaseball --|> Sport
-    IntramuralFootball --|> Sport
-    IntramuralVolleyball --|> Sport
-    
-    VarsityBaseballPlayers --|> PlayerStrategy
-    VarsityFootballPlayers --|> PlayerStrategy
-    IntramuralBaseballPlayers --|> PlayerStrategy
-    IntramuralFootballPlayers --|> PlayerStrategy
-    IntramuralVolleyballPlayers --|> PlayerStrategy
-    
-    Stadium --|> VenueStrategy
-    OpenField --|> VenueStrategy
-    
+    AthleticsDept <|-- VarsityDept
+    AthleticsDept <|-- IntramuralDept
+    VarsityDept --> Sport : creates
+    IntramuralDept --> Sport : creates
+    Sport --> ProvisionsFactory : uses
+    ProvisionsFactory <|-- VarsityFactory
+    ProvisionsFactory <|-- IntramuralFactory
+    Sport --> PlayerStrategy : creates
+    Sport --> VenueStrategy : creates
+    VarsityBaseballPlayers <|-- PlayerStrategy
+    VarsityFootballPlayers <|-- PlayerStrategy
+    IntramuralBaseballPlayers <|-- PlayerStrategy
+    IntramuralFootballPlayers <|-- PlayerStrategy
+    IntramuralVolleyballPlayers <|-- PlayerStrategy
+    Stadium <|-- VenueStrategy
+    OpenField <|-- VenueStrategy
     Sport --> Category
     Sport --> SportType
 ```
 
 ## Design Pattern Implementation:
-- **Strategy Pattern**: The `Sport` class delegates player recruitment and venue reservation to strategy objects, allowing runtime changes in behavior
-- **Inheritance**: Concrete sports inherit from the base `Sport` class
-- **Composition**: Sports are composed with strategy objects rather than inheriting behavior
+- **Factory Pattern**: `VarsityDept` and `IntramuralDept` create concrete `Sport` objects and pass a `ProvisionsFactory` to the sport constructor.
+- **Abstract Factory Pattern**: `ProvisionsFactory` creates player and venue strategies based on `SportType`, allowing strategy creation to be centralized and swapped by department.
+- **Strategy Pattern**: The `Sport` class delegates player recruitment and venue reservation to strategy objects returned by the factory.
+- **Inheritance and Composition**: Departments inherit from `AthleticsDept`; sports inherit from `Sport`; sport behavior is composed from strategies.
 
-This design allows easy extension of new sports or strategies without modifying existing code, following the Open/Closed Principle.
+This design separates object creation from behavior, making it easy to extend with new sport categories, sport types, player strategies, or venue strategies without changing existing classes.
