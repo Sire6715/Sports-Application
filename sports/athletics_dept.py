@@ -1,7 +1,7 @@
-from sport import Category, SportType
+from .sport import Category, SportType
 from abc import ABC, abstractmethod
-from sports import VarsityBaseball, VarsityFootball, IntramuralBaseball, IntramuralVolleyball, IntramuralFootball
-from provisions_factory import VarsityFactory, IntramuralFactory
+from .sports import VarsityBaseball, VarsityFootball, IntramuralBaseball, IntramuralVolleyball, IntramuralFootball
+from .provisions_factory import VarsityFactory, IntramuralFactory
 
 
 class AthleticsDept(ABC):

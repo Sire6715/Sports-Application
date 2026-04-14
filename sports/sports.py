@@ -1,6 +1,6 @@
-from sport import Category, SportType, Sport
-from player_strategy import VarsityFootballPlayers,VarsityBaseballPlayers, IntramuralBaseballPlayers, IntramuralFootballPlayers, IntramuralVolleyballPlayers
-from venue_strategy import Stadium, OpenField
+from .sport import Category, SportType, Sport
+from .player_strategy import VarsityFootballPlayers, VarsityBaseballPlayers, IntramuralBaseballPlayers, IntramuralFootballPlayers, IntramuralVolleyballPlayers
+from .venue_strategy import Stadium, OpenField
 
 class VarsityBaseball(Sport):
      _CATEGORY = Category.VARSITY

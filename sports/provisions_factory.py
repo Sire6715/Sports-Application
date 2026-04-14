@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from sport import SportType
-from player_strategy import VarsityBaseballPlayers, VarsityFootballPlayers, IntramuralBaseballPlayers, IntramuralFootballPlayers, IntramuralVolleyballPlayers
-from venue_strategy import Stadium, OpenField
+from .sport import SportType
+from .player_strategy import VarsityBaseballPlayers, VarsityFootballPlayers, IntramuralBaseballPlayers, IntramuralFootballPlayers, IntramuralVolleyballPlayers
+from .venue_strategy import Stadium, OpenField
 
 class ProvisionsFactory(ABC):
      @abstractmethod
